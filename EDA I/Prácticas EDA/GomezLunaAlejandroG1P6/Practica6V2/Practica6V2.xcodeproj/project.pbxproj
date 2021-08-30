@@ -1,0 +1,284 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FAD54B132249AAAE002F10CE /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = FAD54B122249AAAE002F10CE /* main.c */; };
+		FAD54B1B2249B3FC002F10CE /* Actividad2.c in Sources */ = {isa = PBXBuildFile; fileRef = FAD54B1A2249B3FC002F10CE /* Actividad2.c */; };
+		FAD54B1F2249C099002F10CE /* Actividad3.c in Sources */ = {isa = PBXBuildFile; fileRef = FAD54B1E2249C099002F10CE /* Actividad3.c */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FAD54B0D2249AAAE002F10CE /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		FAD54B0F2249AAAE002F10CE /* Practica6V2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Practica6V2; sourceTree = BUILT_PRODUCTS_DIR; };
+		FAD54B122249AAAE002F10CE /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		FAD54B192249AABF002F10CE /* colaDoble.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = colaDoble.h; sourceTree = "<group>"; };
+		FAD54B1A2249B3FC002F10CE /* Actividad2.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Actividad2.c; sourceTree = "<group>"; };
+		FAD54B1D2249B46D002F10CE /* colaCircular.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = colaCircular.h; sourceTree = "<group>"; };
+		FAD54B1E2249C099002F10CE /* Actividad3.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = Actividad3.c; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FAD54B0C2249AAAE002F10CE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FAD54B062249AAAE002F10CE = {
+			isa = PBXGroup;
+			children = (
+				FAD54B112249AAAE002F10CE /* Practica6V2 */,
+				FAD54B102249AAAE002F10CE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FAD54B102249AAAE002F10CE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FAD54B0F2249AAAE002F10CE /* Practica6V2 */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FAD54B112249AAAE002F10CE /* Practica6V2 */ = {
+			isa = PBXGroup;
+			children = (
+				FAD54B122249AAAE002F10CE /* main.c */,
+				FAD54B192249AABF002F10CE /* colaDoble.h */,
+				FAD54B1D2249B46D002F10CE /* colaCircular.h */,
+				FAD54B1A2249B3FC002F10CE /* Actividad2.c */,
+				FAD54B1E2249C099002F10CE /* Actividad3.c */,
+			);
+			path = Practica6V2;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FAD54B0E2249AAAE002F10CE /* Practica6V2 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FAD54B162249AAAE002F10CE /* Build configuration list for PBXNativeTarget "Practica6V2" */;
+			buildPhases = (
+				FAD54B0B2249AAAE002F10CE /* Sources */,
+				FAD54B0C2249AAAE002F10CE /* Frameworks */,
+				FAD54B0D2249AAAE002F10CE /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Practica6V2;
+			productName = Practica6V2;
+			productReference = FAD54B0F2249AAAE002F10CE /* Practica6V2 */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FAD54B072249AAAE002F10CE /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0910;
+				ORGANIZATIONNAME = "Gomez Luna Alejandro";
+				TargetAttributes = {
+					FAD54B0E2249AAAE002F10CE = {
+						CreatedOnToolsVersion = 9.1;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = FAD54B0A2249AAAE002F10CE /* Build configuration list for PBXProject "Practica6V2" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = FAD54B062249AAAE002F10CE;
+			productRefGroup = FAD54B102249AAAE002F10CE /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FAD54B0E2249AAAE002F10CE /* Practica6V2 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FAD54B0B2249AAAE002F10CE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FAD54B1B2249B3FC002F10CE /* Actividad2.c in Sources */,
+				FAD54B1F2249C099002F10CE /* Actividad3.c in Sources */,
+				FAD54B132249AAAE002F10CE /* main.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		FAD54B142249AAAE002F10CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FAD54B152249AAAE002F10CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		FAD54B172249AAAE002F10CE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FAD54B182249AAAE002F10CE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FAD54B0A2249AAAE002F10CE /* Build configuration list for PBXProject "Practica6V2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAD54B142249AAAE002F10CE /* Debug */,
+				FAD54B152249AAAE002F10CE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FAD54B162249AAAE002F10CE /* Build configuration list for PBXNativeTarget "Practica6V2" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FAD54B172249AAAE002F10CE /* Debug */,
+				FAD54B182249AAAE002F10CE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FAD54B072249AAAE002F10CE /* Project object */;
+}
