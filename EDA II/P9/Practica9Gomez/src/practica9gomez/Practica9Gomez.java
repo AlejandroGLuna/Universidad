@@ -1,0 +1,69 @@
+package practica9gomez;
+
+public class Practica9Gomez {
+    public static void main(String[] args) {
+        BTree arbolB=new BTree(5);
+        arbolB.add(20);
+        arbolB.add(40);
+        arbolB.add(10);
+        arbolB.add(30);
+        arbolB.mostrarArbol();
+        arbolB.add(15);
+        arbolB.add(35);
+        arbolB.add(7);
+        arbolB.add(26);
+        arbolB.add(18);
+        arbolB.mostrarArbol();
+        arbolB.add(22);
+        arbolB.add(5);
+        arbolB.add(42);
+        arbolB.add(13);
+        arbolB.add(46);
+        arbolB.add(27);
+        arbolB.add(8);
+        arbolB.add(32);
+        arbolB.add(38);
+        arbolB.add(24);
+        arbolB.add(45);
+        arbolB.mostrarArbol();
+        arbolB.add(25);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(25);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(18);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(13);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(26);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(40);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(46);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(27);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(20);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(38);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(8);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(45);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(22);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(10);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(30);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(32);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(35);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(15);
+        arbolB.mostrarArbol();
+        arbolB.eliminarElemento(7);
+        arbolB.mostrarArbol();
+    }
+    
+}
