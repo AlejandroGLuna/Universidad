@@ -1,0 +1,40 @@
+h1{
+    height: 35px;
+    width: 90%;
+    margin: 0px;
+    line-height: 35px;
+    text-align: center;
+    text-transform:uppercase;
+}
+
+#bloque1{
+    height: 30px;
+    width: 70%;
+    margin: 0px auto;
+    text-align: justify;
+    line-height: 25px;
+}
+
+#lis{
+    height: 70px;
+    width: 60%;
+    margin: 0px auto;
+    text-align: justify;
+    line-height: 25px;
+}
+
+fieldset{
+    border:none;
+}
+
+form{
+    padding: 5px;
+    width: 300px;
+    position: fixed;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+

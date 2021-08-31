@@ -1,0 +1,229 @@
+
+body{
+    height: 100%;
+    background: rgb(208, 225, 255);
+    font-family: Arial, Helvetica, sans-serif;
+    /*min-height: calc(100% - 90%);*/
+}
+*{
+    margin: 0px;
+    padding:0px;
+}
+   
+/*todo esto es para la barra superior*/
+#barra-superior {
+    margin: 0px auto;
+    width:100%;
+    background:rgb(80, 106, 255); /*Color de fondo de la barra*/
+    height: 45px; /*Anchura de la barra*/
+    /*border-bottom: 2px dotted rgb(53, 53, 255); /*Línea de debajo del menú, si no queréis borrad esta línea*/
+    position:relative; /*Para que la barra se quede fija*/
+    z-index:101; /*Para que la barra se quede fija*/
+}  
+ul, ol {
+    list-style:none;
+}
+.menu > li {
+    float:left;
+    margin: 5px;
+} 
+.menu{
+    margin:0 auto;
+    width:1100px; /*Ancho del menú dentro de la barra, variaremos este valor hasta conseguir el que buscamos*/
+} 
+.menu li a {
+    color:rgb(255, 255, 255); /*Color de las letras de las pestañas*/
+    font:normal normal 10px Arial; /*Tamaño y tipografía de las  pestañas*/
+    text-transform:uppercase; /*Para que esté en mayúsculas, sino borrad esta línea*/
+    letter-spacing: 2px; /*Espaciado entre caracteres, si no queréis borrad la línea*/
+    text-decoration:none;
+    padding:20px 5px;
+    display:block;
+    cursor:pointer;
+}   
+.menu li a:hover {
+    color: rgb(97, 223, 255); /*Color de las pestañas al pasar el ratón por encima*/
+}   
+
+/*Lo siguiente es para el formato de información*/
+
+.modal-contenido{ /*Es lo que le da formato al recuadro de la informacion*/
+    background-color: rgb(255, 255, 255);
+    color:black;
+    border-radius: 45px;
+    width:350px;
+    height: 350px;
+    padding: 20px 40px;
+    margin: 10% auto;
+    position: relative;
+}
+
+.modal{ /*Es que hace que el fondo sea mas oscuro ha comparacion del popup*/
+    background-color: rgba(0,0,0,.65);
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:0;
+    opacity:0;
+    pointer-events:none;
+}
+
+#miModal:target{ /*para el popup de info*/
+    opacity:1;
+    pointer-events:auto;
+    transition: all 1s;
+}
+
+#contacto:target{ /*para el popup de contacto*/
+    opacity:1;
+    pointer-events:auto;
+    transition: all 1s;
+}
+
+/*Para iniciar sesión*/
+.popup{ /*Es lo que le da formato al recuadro de iniciar sesión*/
+    width: 330px;
+    height: 400px;
+    background-color: rgb(255, 255, 255);
+    letter-spacing: 1px;
+    border-radius: 25px;
+    box-shadow: -2px 7px 13px rgb(15, 0, 146);
+    margin: 10% auto;
+}
+
+#pop:target{ /*para el popup de inicar sesión*/
+    opacity:1;
+    pointer-events:auto;
+    transition: all 1s;
+}
+
+h2{
+    color:rgb(80, 106, 255);
+    font-size:30px;
+    font:normal normal 20px Arial;
+    font-weight: 800;
+    padding: 10px;
+    text-align: center;
+    text-transform:uppercase;
+}
+
+/*para login*/
+.login h2{
+    color: rgb(80, 106, 255);
+    font-size:30px;
+    font:normal normal 15px Arial;
+    font-weight: 800;
+    padding: 10px;
+    text-align: center;
+    text-transform:uppercase;
+}
+
+/*input[type="radio"]{ 
+    border: 2px solid blue;
+    outline: none;
+    color: black;
+    margin: 10px auto;
+    border-radius: 10px;
+    transition: 0.5s;
+}*/
+
+input[type="submit"]{
+    height: 50px;
+    width: 150px;
+    outline: none;
+    border: none;
+    margin: 10px auto;
+    transition: 0.5s;
+    background-color: rgb(8, 82, 12);
+    color:white;
+    letter-spacing: 2px;
+    font-weight: 100;
+    padding: 10px;
+    font:normal normal 10px Arial; /*Tamaño y tipografía de las pestañas*/
+    text-transform:uppercase; /*Para que esté en mayúsculas, sino borrad esta línea*/
+    border-radius: 25px;
+}
+
+input[type="submit"]:hover{
+    background-color: rgb(164, 214, 151);
+}
+
+input[type="reset"]{
+    height: 50px;
+    width: 150px;
+    outline: none;
+    border: none;
+    margin: 10px auto;
+    transition: 0.5s;
+    background-color: rgb(135, 109, 248);
+    color:white;
+    letter-spacing: 2px;
+    font-weight: 100;
+    padding: 10px;
+    font:normal normal 10px Arial; /*Tamaño y tipografía de las pestañas*/
+    text-transform:uppercase; /*Para que esté en mayúsculas, sino borrad esta línea*/
+    border-radius: 25px;
+}
+
+select{ /*Formato de los select*/
+    padding: 5px;
+    border: 2px solid blue;
+    outline: none;
+    color: black;
+    width: 150px;
+    margin: 5px auto;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+
+input[type="text"], input[type="password"], input[type="date"], input[type="datetime-local"], input[type="email"]{ /*Formato de los input text*/
+    padding: 10px;
+    border: 2px solid blue;
+    outline: none;
+    color: black;
+    width: 150px;
+    margin: 10px auto;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+
+textarea{ /*Formato de los input text*/
+    padding: 10px;
+    border: 2px solid blue;
+    outline: none;
+    color: black;
+    width: 300px;
+    margin: 10px auto;
+    border-radius: 10px;
+    transition: 0.5s;
+}
+
+.iniciar{
+    outline: none;
+    border: none;
+    margin: 10px auto;
+    width: 150px;
+    border-radius: 10px;
+    padding: 5px;
+    transition: 0.5s;
+    background-color: rgb(8, 82, 12);
+    color:white;
+}
+
+#x{
+    color:black;
+}
+
+/*pie de pagina*/
+footer{ /*Es lo que le da formato al pie de página*/
+    background: black;
+    width: 100%;
+    position: absolute;
+    margin-top: 400px;
+    height: 40px;
+    color: white;
+    text-align: center;
+    padding: 5px 0px;
+    line-height: 50px;
+}

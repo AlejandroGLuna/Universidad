@@ -1,0 +1,251 @@
+#acep{
+    height: 50px;
+    width: 100px;
+    background-color: aquamarine;
+    color:black;
+    padding: 10px auto;
+    position: fixed;
+    top: 150px;
+    left: 600px;
+    bottom: 0;
+    right: 0;
+    outline: none;
+    border: none;
+    border-radius: 25px;
+    line-height: 50px;
+    z-index: 1;
+    align-items: center;
+}
+
+/*.btn-pq{
+    padding: 10px auto;
+    position:relative;
+    height: 50px;
+    width: 100px;
+    position:relative;
+    margin: 20px 0 0 200px;
+    align-items: center;
+    background-color: rgb(135, 109, 248);
+    color:white;
+    outline: none;
+    border: none;
+    border-radius: 25px;
+}*/
+
+/*.btn-pq:hover{
+    background-color: rgb(226, 128, 230);
+}*/
+
+.btn-pqq{
+    display:block;
+    padding: 10px auto;
+    position:relative;
+    height: 250px;
+    width: 300px;
+    position:relative;
+    margin: 20px 0 0 0px;
+    align-items: center;
+    background-color: #6c97c7;
+    color:white;
+    font:normal normal 16px Arial; 
+    text-transform:uppercase; 
+    outline: none;
+    border: none;
+    border-radius: 25px;
+}
+
+.btn-pqq:hover{
+    background-color: rgb(32, 61, 122);
+}
+
+.btn-pqq-small{
+    display:block;
+    padding: 15px auto;
+    position:relative;
+    height: 50px;
+    width: 400px;
+    position:relative;
+    margin: 20px 10px 10px 20px;
+    align-items: center;
+    background-color: #6c97c7;
+    color:white;
+    font:normal normal 12px Arial; 
+    text-transform:uppercase; 
+    outline: none;
+    border: none;
+    border-radius: 25px;
+}
+
+.btn-pqq-small:hover{
+    background-color: rgb(32, 61, 122);
+}
+
+/*input[type="reset"]{
+    background-color: rgb(135, 109, 248);
+    color:white;
+    outline: none;
+    border: none;
+    font:normal normal 10px Arial; 
+    text-transform:uppercase; 
+    letter-spacing: 2px;
+    font-weight: 100;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    transition: 0.5s;
+}*/
+
+
+.btn-pq a{
+    color:white;
+    font:normal normal 10px Arial; /*Tamaño y tipografía de las  pestañas*/
+    text-transform:uppercase; /*Para que esté en mayúsculas, sino borrad esta línea*/
+    letter-spacing: 2px;
+    font-weight: 100;
+    padding: 15px;
+    text-align: center;
+    transition: 0.5s;
+}
+
+.validar{
+    height: 50px;
+    width: 150px;
+    position:relative;
+    margin: 20px 0 0 200px;
+    align-items: center;
+    background-color: rgb(8, 82, 12);
+    color:white;
+    outline: none;
+    border: none;
+    letter-spacing: 2px;
+    font-weight: 100;
+    padding: 15px;
+    font:normal normal 10px Arial; /*Tamaño y tipografía de las pestañas*/
+    text-transform:uppercase; /*Para que esté en mayúsculas, sino borrad esta línea*/
+    border-radius: 25px;
+}
+
+.validar:hover{
+    background-color: rgb(164, 214, 151);
+}
+
+.consultarActualizar{
+    height: 50px;
+    width: 100px;
+    position:relative;
+    margin: 10px 0 0 0px;
+    align-items: center;
+    background-color: rgb(8, 82, 12);
+    color:white;
+    outline: none;
+    border: none;
+    letter-spacing: 2px;
+    font-weight: 100;
+    padding: 15px;
+    font:normal normal 10px Arial; /*Tamaño y tipografía de las pestañas*/
+    text-transform:uppercase; /*Para que esté en mayúsculas, sino borrad esta línea*/
+    border-radius: 25px;
+}
+
+.consultarActualizar:hover{
+    background-color: rgb(164, 214, 151);
+}
+
+.limpiar{
+    height: 50px;
+    width: 150px;
+    position:relative;
+    margin: 20px 0 0 200px;
+    align-items: center;
+    background-color: rgb(135, 109, 248);
+    color:white;
+    outline: none;
+    border: none;
+    letter-spacing: 2px;
+    font-weight: 100;
+    padding: 15px;
+    font:normal normal 10px Arial; /*Tamaño y tipografía de las pestañas*/
+    text-transform:uppercase; /*Para que esté en mayúsculas, sino borrad esta línea*/
+    border-radius: 25px;
+}
+
+.limpiar:hover{
+    background-color: rgb(215, 160, 223);
+}
+
+.rows{ /*Los elementos dentro de esta clase se encuentran en filas*/
+    display:flex;
+    flex-direction: row;
+}
+
+div{ /*Hace que todo quede centrado :v*/
+    margin: 0 0 -15px 100px;
+}
+
+.forms{
+    position: relative;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    border-spacing: 15px;
+    padding: 5px;
+    width: 300px; /*Para el espacio entre los forms*/
+    margin: .4em 0;
+}
+
+.formsInicios{
+    position: relative;
+    display:flex;
+    flex-direction: row;
+    align-items: center;
+    border-spacing: 0px;
+    padding: 0px;
+    width: 400px; /*Para el espacio entre los forms*/
+    margin: .4em 0;
+}
+
+.forms label { /*Con este se le da el espacio entre label y form*/
+    width: 85px;
+    float: left;
+}
+
+fieldset{  /*No sé si sea necesario esto*/
+    border-radius: 15px;
+    border-width: 5px;
+    border-color: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    margin: 50px -400px -100px 100px;
+    border-spacing: 10px;
+
+}
+
+.mod{ /*Es que hace que el fondo sea mas oscuro ha comparacion del popup*/
+    background-color: rgba(0,0,0,.65);
+    position:fixed;
+    top:0;
+    right:0;
+    bottom:0;
+    left:-100px;
+    opacity:0;
+    pointer-events:none;
+}
+
+.pop{ /*el recuadro de los popup*/
+    width: 350px;
+    height: 150px;
+    background-color: rgb(255, 255, 255);
+    color:black;
+    border-radius: 25px;
+    box-shadow: -2px 7px 13pxrgb(15, 0, 146);
+    margin: 7% auto;
+    opacity: 1;
+}
+
+#msg:target{ /*recuadro mensajes*/
+    opacity:1;
+    pointer-events:auto;
+    transition: all 1s;
+    z-index: 1;
+}

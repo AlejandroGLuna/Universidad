@@ -1,0 +1,53 @@
+*{
+    margin:0;
+    padding: 0;
+}
+
+/*usa el de modal tambien porque es del mismo tipo :V*/
+
+#act:target{ /*recuadro actualizar*/
+    opacity:1;
+    pointer-events:auto;
+    transition: all 1s;
+}
+
+#cons:target{ /*recuadro consulta*/
+    opacity:1;
+    pointer-events:auto;
+    transition: all 1s;
+    z-index: 1;
+}
+
+.btn{
+    padding: 10px auto;
+    position:relative;
+    height: 150px;
+    width: 200px;
+    position:relative;
+    margin-top: 90px;
+    margin-left: -180px;
+    margin-right: 250px;
+    margin-bottom: -250px;
+    background-color: rgb(176, 191, 223);
+    /*o tambien lightcoral*/
+    border:none;
+    border-radius: 25px;
+}
+
+a:link{
+    color:red;
+}
+
+.btn a{
+    color:black;
+    font:normal normal 15px Arial; /*Tamaño y tipografía de las  pestañas*/
+    text-transform:uppercase; /*Para que esté en mayúsculas, sino borra esta línea*/
+    letter-spacing: 2px;
+    font-weight: 600;
+    padding: 10px;
+    text-align: center;
+    
+}
+
+
+

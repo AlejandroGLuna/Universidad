@@ -1,0 +1,37 @@
+[13-Feb-2021 12:40:22 America/Mexico_City] PHP Fatal error:  Uncaught Exception: FPDF error: Some data has already been output, can't send PDF file (output started at /home3/ghdemexi/public_html/admin/registrosPorGenero.php:43) in /home3/ghdemexi/public_html/fpdf/fpdf.php:270
+Stack trace:
+#0 /home3/ghdemexi/public_html/fpdf/fpdf.php(1049): FPDF->Error('Some data has a...')
+#1 /home3/ghdemexi/public_html/fpdf/fpdf.php(999): FPDF->_checkoutput()
+#2 /home3/ghdemexi/public_html/admin/registrosPorGenero.php(159): FPDF->Output()
+#3 {main}
+  thrown in /home3/ghdemexi/public_html/fpdf/fpdf.php on line 270
+[13-Feb-2021 12:41:56 America/Mexico_City] PHP Fatal error:  Uncaught Exception: FPDF error: Some data has already been output, can't send PDF file (output started at /home3/ghdemexi/public_html/admin/registrosPorGenero.php:43) in /home3/ghdemexi/public_html/fpdf/fpdf.php:270
+Stack trace:
+#0 /home3/ghdemexi/public_html/fpdf/fpdf.php(1049): FPDF->Error('Some data has a...')
+#1 /home3/ghdemexi/public_html/fpdf/fpdf.php(999): FPDF->_checkoutput()
+#2 /home3/ghdemexi/public_html/admin/registrosPorGenero.php(159): FPDF->Output()
+#3 {main}
+  thrown in /home3/ghdemexi/public_html/fpdf/fpdf.php on line 270
+[13-Feb-2021 13:07:01 America/Mexico_City] PHP Fatal error:  Uncaught Exception: FPDF error: Some data has already been output, can't send PDF file (output started at /home3/ghdemexi/public_html/admin/registrosPorGenero.php:43) in /home3/ghdemexi/public_html/fpdf/fpdf.php:270
+Stack trace:
+#0 /home3/ghdemexi/public_html/fpdf/fpdf.php(1049): FPDF->Error('Some data has a...')
+#1 /home3/ghdemexi/public_html/fpdf/fpdf.php(999): FPDF->_checkoutput()
+#2 /home3/ghdemexi/public_html/admin/registrosPorGenero.php(159): FPDF->Output()
+#3 {main}
+  thrown in /home3/ghdemexi/public_html/fpdf/fpdf.php on line 270
+[13-Feb-2021 13:14:15 America/Mexico_City] PHP Fatal error:  Uncaught Exception: FPDF error: Some data has already been output, can't send PDF file (output started at /home3/ghdemexi/public_html/admin/registrosPorGenero.php:43) in /home3/ghdemexi/public_html/fpdf/fpdf.php:270
+Stack trace:
+#0 /home3/ghdemexi/public_html/fpdf/fpdf.php(1049): FPDF->Error('Some data has a...')
+#1 /home3/ghdemexi/public_html/fpdf/fpdf.php(999): FPDF->_checkoutput()
+#2 /home3/ghdemexi/public_html/admin/registrosPorGenero.php(157): FPDF->Output()
+#3 {main}
+  thrown in /home3/ghdemexi/public_html/fpdf/fpdf.php on line 270
+[13-Feb-2021 13:18:48 America/Mexico_City] PHP Fatal error:  Uncaught Exception: FPDF error: Some data has already been output, can't send PDF file (output started at /home3/ghdemexi/public_html/admin/registrosPorGenero.php:43) in /home3/ghdemexi/public_html/fpdf/fpdf.php:270
+Stack trace:
+#0 /home3/ghdemexi/public_html/fpdf/fpdf.php(1049): FPDF->Error('Some data has a...')
+#1 /home3/ghdemexi/public_html/fpdf/fpdf.php(999): FPDF->_checkoutput()
+#2 /home3/ghdemexi/public_html/admin/registrosPorGenero.php(157): FPDF->Output()
+#3 {main}
+  thrown in /home3/ghdemexi/public_html/fpdf/fpdf.php on line 270
+[13-Feb-2021 14:34:08 America/Mexico_City] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home3/ghdemexi/public_html/admin/registrosPacientes.php:39) in /home3/ghdemexi/public_html/admin/registrosPacientes.php on line 110
+[13-Feb-2021 14:50:49 America/Mexico_City] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home3/ghdemexi/public_html/admin/registrosPacientes.php:39) in /home3/ghdemexi/public_html/admin/registrosPacientes.php on line 110

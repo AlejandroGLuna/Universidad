@@ -1,0 +1,48 @@
+.default{ 
+    background: #e2d6ac;
+    padding: 1em; 
+    color: #71a4d6;
+
+    font-weight: bolder;
+    text-transform: uppercase;
+    font-size: 12px;
+    border-radius: 5px;
+    box-shadow: 6px 6px 29px -4px rgba(0,0,0,0.75);
+    margin-top: 25px;
+    text-decoration: none;
+    transition: 0.4s;
+}
+
+.default th{
+    background: #032d44;
+    padding: 1em; 
+    color: #c8d6e6;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.default td{
+    background: #7cb1cf;
+    padding: 1em; 
+    color: #081929;
+    font-weight: normal;
+    text-transform: none;
+
+    font-size: 12px;
+    border-radius: 10px;
+    box-shadow: 10px 10px 29px -4px rgba(0,0,0,0.75);
+    margin-top: 10px;
+    text-decoration: none;
+    transition: 0.4s;
+    width: 200px;
+    height: 20px;
+    place-items: center;
+    text-align: center;
+    
+}
+
+.default tr:hover {
+    background-color: steelblue;
+    color: white;
+
+}
