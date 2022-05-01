@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="bootrstrap-v5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="datatables/datatables.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome-free-5.15.4-web/css/all.css">
+    <script src="/eel.js"></script>
+    <title>Métricas Distancia</title>
+</head>
+<body>
+  <div id="template"></div>
+  <div>
+    <div class="card text-white text-center bg-dark m-5">
+      <div class="card-header my-1 mt-3"><h2>Ingresar Parámetros</h2></div>
+      <div class="card-body">
+          <form action="" id="my-form">
+              <div class="form-group row mb-3">
+                <label for="metrica" class="col-sm-2 text-end col-form-label">Seleccionar Metrica</label>
+                  <div class="col-sm-10">
+                    <select class="form-control" id="metrica">
+                      <option value="1" selected>Euclidiana</option>
+                      <option value="2">Chebyshev</option>
+                      <option value="3">Manhattan</option>
+                      <option value="4">Minkowski</option>
+                    </select>
+                  </div>
+              </div>
+
+              <div class="form-group row" id ="lambda"></div>
+
+              <fieldset class="form-group mt-3 text-start">
+                <div class="row">
+                  <legend class="col-form-label col-sm-2 text-end">Valores</legend>
+                  <div class="col-sm-10">
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="radios" id="gridRadios1" value="opcion1" checked>
+                      <label class="form-check-label" for="gridRadios1">
+                        Calcular toda la matriz de distancias
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="radios" id="gridRadios2" value="opcion2">
+                      <label class="form-check-label" for="gridRadios2">
+                        Calcular un subconjunto de distancias
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="radios" id="gridRadios3" value="opcion3">
+                      <label class="form-check-label" for="gridRadios3">
+                        Calcular una pareja de valores
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="form-group row my-3" id ="rango"></div>
+
+              <div>
+                <button type="submit" id="subir" class="btn btn btn-outline-success btn-lg mt-2"><i class="fas fa-caret-square-up me-2"></i>INGRESAR</button>
+                <button type="reset" id="limpiar" class="btn btn btn-outline-danger btn-lg mt-2" onclick="desactiva()"><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+              </div>
+          </form>
+      </div>
+    </div>
+
+    <div class = "mx-3 my-5" id="tabla"></div>
+    <div class="mx-5" id="resultado"></div>
+  </div>
+</body>
+
+<script src="bootrstrap-v5/js/bootstrap.bundle.js"></script>
+<script src="jquery-3.6.0.min.js"></script>
+<script type="text/javascript" charset="utf8" src="/datatables/datatables.js"></script>
+
+<script>
+  var metrica = "1", opcionRango = "opcion1", tablaCreada = false;
+  $(document).ready(function(){
+    $("#template").load("template.html", function(){
+        $("#MD2").addClass("active")
+    });
+
+    $('#metrica').on('change', function(){
+      metrica = this.value;
+      if(metrica == "4"){
+        $("#lambda").append("\
+        <label for='metrica' class='col-sm-2 text-end col-form-label'>Lambda</label> \
+        <div class='col-sm-10'> \
+          <input type='text' class='form-control' placeholder='0.000' pattern='^\\d*(\\.\\d+)?$' id='lambdaValor' required> \
+          <small id='descripcion' class='form-text text-white-50'> \
+            Parametro para Minkowski únicamente. Solamente ingresar el numero como en el ejemplo. Se permiten decimales.\
+          </small>\
+        </div>\
+        ");
+      }else{
+        $("#lambda").empty();
+      }
+    });
+
+    $('input:radio').change(function() {      
+      opcionRango = $("input[name='radios']:checked").val();   
+      switch(opcionRango){
+        case "opcion2":
+          $("#rango").empty();
+          $("#rango").append("\
+          <label for='indices' class='col-sm-2 text-end col-form-label'>Indices</label> \
+          <div class='col-sm-10'> \
+            <input type='text' class='form-control' placeholder='i-j' pattern='^(\\d+)-(\\d+)$' id = 'rangoValor' required> \
+            <small id='descripcion' class='form-text text-white-50'> \
+              Para obtener un suconjunto indicar los indices que se incluiran separados por un -\
+            </small>\
+          </div>\
+          ");
+          break;
+        case "opcion3":
+          $("#rango").empty();
+          $("#rango").append("\
+          <label for='indices' class='col-sm-2 text-end col-form-label'>Indices</label> \
+          <div class='col-sm-10'> \
+            <input type='text' class='form-control' placeholder='i,j' pattern='^\\d+,\\d+$' id = 'rangoValor' required> \
+            <small id='descripcion' class='form-text text-white-50'> \
+              Para obtener una pareja de elementos indicar los indices separados por una ,\
+            </small>\
+          </div>\
+          ");
+          break;
+        default:
+          $("#rango").empty();
+          break;
+      }
+    });
+
+    $(document).on('submit', '#my-form', function(){
+      let lambda = $("#lambdaValor").length == 0 ? null : $("#lambdaValor").val();
+      let rango = $("#rangoValor").length == 0 ? null : $("#rangoValor").val();
+
+      $("#my-form").trigger("reset");
+      desactiva();
+
+      $("#tabla").prepend(`\
+        <div class='d-flex align-items-center' id ='cargando'>\
+          <strong>Cargando...</strong>\
+          <div class='spinner-border ms-auto' role='status' aria-hidden='true'></div>\
+        </div>\
+      `);
+
+      generarDistancias(metrica, lambda, rango, opcionRango).then(res =>{
+        if(opcionRango == "opcion3"){
+          $("#cargando").remove();
+          $("#resultado").empty();
+
+          $("#resultado").append(`\
+          <div class='card mb-5'>\
+            <div class='card-header'>\
+            Resultado\
+            </div>\
+            <div class='card-body'>\
+              <p>La distancia calculada entre los elemtos es de ${res}</p>\
+            </div>\
+          </div>\
+          `);
+        }else{
+          $("#tabla").empty();
+          var datos = JSON.parse(res);
+
+          var tabla = document.createElement("table");
+          tabla.className = "table table-dark table-hover";
+          tabla.id = "info";
+
+          var tablaEncabezado = document.createElement("thead");
+          tablaEncabezado.className = "sticky-top";
+          var tablaCuerpo = document.createElement("tbody");
+
+          var node = document.createElement("tr");
+          node.innerHTML = '<th scope="col">#</th>';
+
+          var encabezados = datos["columns"];
+          var info = datos["data"];
+          var index = datos["index"];
+          
+          encabezados.forEach(e => {
+            let celda = document.createElement("th");
+            celda.scope = 'col';
+            celda.innerHTML = String(e);
+            node.appendChild(celda);
+          });
+          tablaEncabezado.appendChild(node)
+          
+          let i = 1;
+          info.forEach(e => {
+            let renglon = document.createElement("tr");
+            renglon.innerHTML = '<th scope="row">'+ index[i-1] + '</th>';
+            e.forEach(e2 => {
+              let celda = document.createElement("td");
+              celda.innerHTML = String(e2);
+              renglon.appendChild(celda);
+            });
+            tablaCuerpo.appendChild(renglon);
+            i++;
+          });
+
+          $("#cargando").remove();
+          
+          tabla.appendChild(tablaEncabezado);
+          tabla.appendChild(tablaCuerpo);
+          document.getElementById("tabla").appendChild(tabla);
+        }
+        metrica = "1";
+        opcionRango = "opcion1";
+
+        $("#info").DataTable({
+          destroy: true,
+          scrollY: "420px",
+          scrollX: true,
+          language: {
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "zeroRecords": "No se encontraron resultados",
+            "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sSearch": "Buscar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast":"Último",
+                "sNext":"Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "sProcessing":"Procesando..."
+          },
+          fixedHeader: true
+        });
+        document.getElementById("info_filter").classList.add("mb-2");
+      });
+
+
+    return false;
+    });
+  });
+
+  function desactiva(){
+    $(document).ready(function(){
+      $("#lambda").empty();
+      $("#rango").empty();
+    });
+  }
+
+  async function generarDistancias(t, l, r, o){
+    return await eel.distancias(t,l,r, o)();
+  }
+</script>
+
+</html>
+

@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="bootrstrap-v5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="datatables/datatables.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome-free-5.15.4-web/css/all.css">
+    <script src="/eel.js"></script>
+    <script src="chart.js"></script>
+    <title>Clústering Particional</title>
+</head>
+<body>
+    <div id="template"></div>
+    <div>
+        <div class="card text-white text-center bg-dark m-5">
+            <div class="card-header my-1 mt-3"><h2>Ajustar Variables</h2></div>
+            <div class="card-body">
+                <form action="" id="my-form">
+                    <h5 class="card-title">Seleccionar las variables a considerar</h5>
+
+                    <div class="form-group row" id ="variables"></div>
+
+                    <div class="form-check form-switch text-start">
+                        <input class="form-check-input" type="radio" id="mostrarRango" name="opciones">Ajustar rango máximo para el método del codo
+                    </div>
+                    <div class="form-group row"  id="Rango"></div>
+                    
+                    <div class="form-check form-switch text-start">
+                        <input class="form-check-input" type="radio" id="mostrarNClusters" name="opciones">Seleccionar cantidad de clústers
+                    </div>
+                    <div class="form-group row"  id="NClusters"></div>
+
+                    <button type="submit" id="subir" class="btn btn-outline-success btn-lg mt-2"><i class="fas fa-caret-square-up me-2"></i>INGRESAR</button>
+                    <button type="reset" id="limpiar" class="btn btn btn-outline-danger btn-lg mt-2" onclick="cls()"><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="m-5 text-center" id="metodoCodo">
+        <div class="mb-5" style="height: 450px;">
+            <canvas id="myChartParticional" class="m-5"></canvas>
+        </div>
+        <div class="m-5 text-center" id="kneeLocator"></div>
+    </div>
+
+    <div class="m-5 text-center" id = "formacionClusters">
+        <div style="height: 400px;">
+            <canvas id="myChart" class="mx-2 mb-5"></canvas>
+        </div>
+        <div id="clustersFormados" class="accordion accordion-flush mb-2"></div>
+        <div class="d-grid gap-2" id = "botonConclusion"></div>
+    </div>
+</body>
+
+<script src="jquery-3.6.0.min.js"></script>
+<script src="bootrstrap-v5/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" charset="utf8" src="/datatables/datatables.js"></script>
+<script src="FileSaver.js"></script>
+<script>
+    var numClusters = 0, myChart, myChart2;
+    $(document).ready(function(){
+      $("#template").load("template.html", function(){
+        $("#CP5").addClass("active")
+      });
+    });
+
+    async function run(){
+        var vars = await eel.cabeceraDatos()();
+        var grupoBotones = document.getElementById("variables");
+
+        var contenedorVars = document.createElement("div");
+        contenedorVars.id = "dimensionalidad";
+
+        vars.forEach(e => {
+            let item = document.createElement("button");
+            item.className = "btn btn-outline-warning m-2 active";
+            item.setAttribute("data-bs-toggle","button");
+            item.setAttribute("autocomplete","off");
+            item.setAttribute("aria-pressed","true");
+            item.innerText = e;
+            contenedorVars.appendChild(item);
+        });
+
+        grupoBotones.appendChild(contenedorVars);
+    }
+    run();
+
+    function restaura(){
+        $(document).ready(function(){
+            $("#Rango").empty();
+            $("#NClusters").empty();
+        });
+    }
+
+    function cls(){
+        $(document).ready(function(){
+            $("#dimensionalidad").children("button").each(function(){
+                $(this).attr("aria-pressed", "true");
+                this.className = "btn btn-outline-warning m-2 active";
+            });
+            $("#Rango").empty();
+            $("#NClusters").empty();
+        });
+    }
+
+    $(document).on('submit', '#my-form', function() {
+        let variables = [];
+        $("#dimensionalidad").children().each(function() {
+            if (this.className == "btn btn-outline-warning m-2 active")
+                variables.push(this.innerText);
+        });
+
+        if ($("#nC").length > 0){
+            $("#clustersFormados").empty();
+            $("#clustersFormados").prepend(`\
+                <div class='d-flex align-items-center' id ='cargando'>\
+                <strong>Cargando...</strong>\
+                <div class='spinner-border ms-auto' role='status' aria-hidden='true'></div>\
+                </div>\
+            `);
+
+            obtenerCantidadClusters(variables, $("#nC").val()).then(json => {
+                restaura();
+                let transacciones = JSON.parse(json); 
+
+                let info = transacciones["data"];
+                let nombres = [], frecuencias = [];
+
+                let i = 0;
+                info.forEach(e => {
+                    nombres.push(i);
+                    frecuencias.push(e);
+                    i++;
+                });
+
+                numClusters = i;
+                
+                if(!$("#cantidad").length){
+                    let titulo = document.createElement("h2");
+                    titulo.id = "cantidad";
+                    titulo.className = "text-center";
+                    titulo.innerText = "CANTIDAD DE ELEMENTOS EN CADA CLÚSTER"
+                    document.getElementById("formacionClusters").prepend(titulo);
+                }
+
+                var ctx = document.getElementById("myChart").getContext("2d");
+
+                if(myChart)
+                    myChart.destroy();
+
+                myChart = new Chart(ctx, {
+                    type:"bar",
+                    data:{
+                        labels:nombres,
+                        datasets:[{
+                            data:frecuencias,
+                            backgroundColor: getRandomColorEachItem(nombres.length),
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        maintainAspectRatio: false
+                    }
+                })
+                
+                $("#clustersFormados").empty();
+
+                obtenerClusters().then(json => {
+                    let transacciones = JSON.parse(json)
+                    let encabezados = transacciones["columns"];
+                    let info = transacciones["data"]
+
+                    let titulo = document.createElement("h2");
+                    titulo.className = "text-center";
+                    titulo.innerText = "CLÚSTERS FORMADOS"
+                    
+                    let contenedor = document.getElementById("clustersFormados");
+                    contenedor.appendChild(titulo);
+
+                    let i = 0;
+                    info.forEach(arr => {
+                        let item = document.createElement("div");
+                        item.className = "accordion-item";
+
+                        let h2 = document.createElement("h2");
+                        h2.id = `flush-h${i}`;
+                        h2.className = "accordion-header";
+
+                        let boton = document.createElement("button");
+                        boton.className = "accordion-button collapsed";
+                        boton.type = "button";
+                        boton.setAttribute("data-bs-toggle","collapse");
+                        boton.setAttribute("data-bs-target",`#flush-c${i}`);
+                        boton.setAttribute("aria-expanded","false");
+                        boton.setAttribute("aria-controls",`flush-c${i}`);
+                        boton.innerHTML = "Clúster #" + i.toString();
+
+                        let divCard = document.createElement("div");
+                        divCard.id = `flush-c${i}`;
+                        divCard.className = "accordion-collapse collapse";
+                        divCard.setAttribute("aria-labelledby", `flush-h${i}`);
+                        divCard.setAttribute("data-bs-parent", "#clustersFormados");
+
+                        let contenido = document.createElement("div");
+                        contenido.className = "accordion-body";
+                        contenido.id = `cluster-${i}` //Cambiado de regla a cluster
+
+                        let x = 0;
+                        arr.forEach(e => {
+                            let p = document.createElement("p");
+                            p.innerText = encabezados[x++] + ": " + e;
+                            contenido.appendChild(p);
+                        });
+
+                        let areaTexto = document.createElement("textarea");
+                        areaTexto.className = "form-control";
+                        areaTexto.id =  `conclusion-${i}`;
+
+                        contenido.appendChild(areaTexto);
+
+                        divCard.appendChild(contenido);
+
+                        h2.appendChild(boton);
+
+                        item.appendChild(h2);
+                        item.appendChild(divCard);
+
+                        contenedor.appendChild(item);
+
+                        i++;
+                    });
+
+                    if(!$("#botonazo").length){
+                        let boton = document.createElement("button");
+                        boton.id = "botonazo";
+                        boton.className = "btn btn-success btn-lg mt-2 mb-5 mx-5";
+                        boton.type = "button";
+                        boton.innerText = "Guardar Conclusiones";
+                        boton.onclick = generarConclusion;
+                        document.getElementById("botonConclusion").appendChild(boton);
+                    }
+                });
+            });
+        }else{
+            $("#metodoCodo").prepend(`\
+                <div class='d-flex align-items-center' id ='cargando'>\
+                <strong>Cargando...</strong>\
+                <div class='spinner-border ms-auto' role='status' aria-hidden='true'></div>\
+                </div>\
+            `);
+
+            var n = $("#nR").length > 0 ?  $("#nR").val() : "12";
+
+            generarCodo(variables,  n).then(SSE => {
+                restaura();
+
+                let clusters = []
+                for (let i = 2; i <= parseInt(n, 10); i++) {
+                    clusters.push(i);
+                }
+
+                var ctx2 = document.getElementById("myChartParticional").getContext("2d");
+
+                if(myChart2)
+                    myChart2.destroy();
+
+                myChart2 = new Chart(ctx2, {
+                    type:"line",
+                    data:{
+                        labels:clusters,
+                        datasets:[{
+                            label: "SSE",
+                            data:SSE,
+                            fill: true,
+                            borderColor: "rgb(255, 128, 128)",
+                            pointBackgroundColor: 'rgb(255, 0, 0)',
+                            pointBorderWidth: "5",
+                        }]
+                    },
+                })
+                document.getElementById("cargando").remove();
+
+                if(!$("#elbow").length){
+                    let titulo = document.createElement("h2");
+                    titulo.id = "elbow";
+                    titulo.className = "text-center";
+                    titulo.innerText = "MÉTODO DEL CODO";
+                    document.getElementById("metodoCodo").prepend(titulo);
+                }
+
+                localizarCodo(SSE, n).then(nCluster => {
+                    let locator = document.createElement("h4");
+                    locator.className = "text-center text-primary";
+                    locator.innerText = "LOCALIZACIÓN DEL CODO: " + String(nCluster);
+                    
+                    $("#kneeLocator").empty();
+
+                    document.getElementById("kneeLocator").appendChild(locator);
+                    });
+            });
+        }
+
+        $("#my-form").trigger("reset");
+        return false;
+    });
+
+    $("#mostrarRango").on('change', function(){
+        if(this.value == "on"){
+            $("#Rango").append("\
+            <label for='indices' class='col-sm-2 text-end col-form-label'>Rango</label> \
+            <div class='col-sm-4'> \
+                <input type='text' class='form-control' placeholder='n' pattern='^(\\d+)$' id = 'nR' required> \
+                <small id='descripcion' class='form-text text-white-50'> \
+                Ingresar el rango máximo a considerar.\
+                </small>\
+            </div>\
+            ");
+            $("#NClusters").empty();
+        }else{
+            $("#Rango").empty();
+        }
+    });
+
+    $("#mostrarNClusters").on('change', function(){
+        if(this.value == "on"){
+            $("#NClusters").append("\
+            <label for='indices' class='col-sm-2 text-end col-form-label'>Cantidad Clústers</label> \
+            <div class='col-sm-4'> \
+                <input type='text' class='form-control' placeholder='0' pattern='^(\\d){1,2}$' id = 'nC' required> \
+                <small id='descripcion' class='form-text text-white-50'> \
+                Ingresar número entero únicamente\
+                </small>\
+            </div>\
+            ");
+            $("#Rango").empty();
+        }else{
+            $("#NClusters").empty();
+        }
+    });
+
+    async function generarCodo(vars, rango){
+        return await eel.elbowMethod(vars, rango)();
+    }
+
+    async function localizarCodo(SSE, r){
+        return await eel.codo(SSE, r)();
+    }
+
+    async function obtenerCantidadClusters(vars, cantidad){
+        return await eel.clustersParticional(vars, cantidad)();
+    }
+
+    async function obtenerClusters(){
+        return await eel.clustersFormadosParticional()();
+    }
+
+    function generarConclusion(){
+        $(document).ready(function(){
+        let con = "";
+        for (let i = 0; i < numClusters; i++) {
+            texto = $(`#conclusion-${i}`).val();
+            if(texto){
+                con += `\t=== CLÚSTER ${i} ===\n`;
+                $(`#cluster-${i}`).children("p").each(function () {
+                    con += $(this).text().trim() + "\n";
+                });
+                con += "***CONCLUSION GENERADA***" + "\n" + texto.trim() + "\n\n";
+            }
+        }
+        var blob = new Blob([con], {type: "text/plain;charset=utf-8"});
+        saveAs(blob, "conclusiones.txt");
+        });
+    }
+
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    function getRandomColorEachItem(count) {
+        var data =[];
+        for (var i = 0; i < count; i++) {
+            data.push(getRandomColor());
+        }
+        return data;
+    }
+
+</script>
+</html>

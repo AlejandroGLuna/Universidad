@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="bootrstrap-v5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="datatables/datatables.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome-free-5.15.4-web/css/all.css">
+    <script src="/eel.js"></script>
+    <title>Regresión Logística</title>
+</head>
+<body>
+    <div id="template"></div>
+    <div>
+        <div class="card text-white text-center bg-dark m-5">
+            <div class="card-header my-1 mt-3"><h2>Ajustar Variables</h2></div>
+            <div class="card-body">
+                <h5 class="card-title">Seleccionar las variables a considerar</h5>
+                <div class="form-group row" id ="variables"></div>
+                <button type="button" id="preModelo" class="btn btn-outline-success btn-lg mt-2"><i class="fas fa-caret-square-up me-2"></i>INGRESAR</button>
+                <button type="reset" id="limpiarVariables" class="btn btn btn-outline-danger btn-lg mt-2" onclick="cls()"><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <form action="" id="my-form">
+            <fieldset id="preAnalisis" disabled>
+                <div class="card text-white text-center bg-dark m-5">
+                    <div class="card-header my-1 mt-3"><h2>Ajustar Modelo</h2></div>
+                    <div class="card-body">
+                        <div class="form-group row mb-3">
+                            <label for="predictora" class="col-sm-2 text-end col-form-label">Seleccionar la variable a predecir</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="predictora"></select>
+                            </div>
+                        </div>
+                        
+                        <label for="rangoSlide" class="form-label">Seleccionar el porcentaje de datos para prueba</label>
+                        <div class="form-group row mb-3">
+                            <div class="col-sm-10">
+                                <input type="range" class="form-range" id="rangoSlide" min="5" max="30" step="1" value="5">
+                            </div>
+                            <div class="col-sm-2" id="valorRango">5%</div>
+                        </div>
+                        
+                        <button type="submit" id="subir" class="btn btn-outline-success btn-lg mt-2"><i class="fas fa-caret-square-up me-2"></i>INGRESAR</button>
+                        <button type="reset" id="limpiar" class="btn btn btn-outline-danger btn-lg mt-2"><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div class="mx-5 mb-5 text-center" id="reporteModeloRL">
+        <table class="table table-dark table-hover" id = "info"></table>
+        <div class="text-primary" id ="reporteTexto"></div>
+        <div class="text-danger fw-bolder" id="modeloRL"></div>
+    </div>
+
+</body>
+
+<script src="jquery-3.6.0.min.js"></script>
+<script src="bootrstrap-v5/js/bootstrap.bundle.js"></script>
+<script>
+    var variables = [], varY = "1", rango="5";
+    $(document).ready(function(){
+        $("#template").load("template.html", function(){
+            $("#RL6").addClass("active")
+        });
+
+        $("#preModelo").click(function(){
+            $("#preAnalisis").prop('disabled', false);
+            $("#predictora").empty();
+
+            let i = 1;
+            variables = [];
+            $("#dimensionalidad").children().each(function() {
+                if (this.className == "btn btn-outline-warning m-2 active"){
+                    let variableActual = this.innerText;
+                    $("#predictora").append(`<option value="${i++}">${variableActual}</option>`);
+                    variables.push(variableActual);
+                }
+            });
+        });
+
+        $(document).on('input', '#rangoSlide', function() {
+            rango = $(this).val();
+            $("#valorRango").text(`${rango}%`);
+        });
+
+        $('#predictora').on('change', function(){
+            varY = this.value;
+        });
+
+        $(document).on('submit', '#my-form', function(){
+            $("#reporteModeloRL").append(`\
+                <div class='d-flex align-items-center' id ='cargando'>\
+                <strong>Cargando...</strong>\
+                <div class='spinner-border ms-auto' role='status' aria-hidden='true'></div>\
+                </div>\
+            `);
+
+            let varYIndex = parseInt(varY,10)-1;
+            let predecir = variables[varYIndex];
+            variables.splice(varYIndex,1);
+
+            $("#valorRango").text(`5%`);
+            cls();
+            desactiva();
+            $("#info").empty();
+            $("#reporteTexto").empty();
+            $("#modeloRL").empty();
+
+            realizarReporteRegresionLogistica(variables, predecir, rango).then(json => {
+                let datos = JSON.parse(json); 
+                let info = datos["data"];
+                let index = datos["index"];
+
+                let tabla = document.getElementById("info");
+                let tablaEncabezado = document.createElement("thead");
+                let tablaCuerpo = document.createElement("tbody");
+
+                let node = document.createElement("tr");
+                node.innerHTML = '<th scope="col">Etiquetas</th>';
+
+                index.forEach(e => {
+                    let celda = document.createElement("th");
+                    celda.scope = 'col';
+                    celda.innerHTML = String(e) + " (PREDICHO)";
+                    node.appendChild(celda);
+                });
+                tablaEncabezado.appendChild(node)
+
+                let i = 0, vp = parseInt(info[0][0],10), fn = parseInt(info[0][1],10), fp = parseInt(info[1][0],10), vn = parseInt(info[1][1],10);
+                info.forEach(e => {
+                    let renglon = document.createElement("tr");
+                    renglon.innerHTML = '<th scope="row">'+ index[i] + ' (REAL)' +'</th>';
+                    e.forEach(e2 => {
+                        let celda = document.createElement("td");
+                        celda.innerHTML = String(e2);
+                        renglon.appendChild(celda);
+                    });
+                    tablaCuerpo.appendChild(renglon);
+                    i++;
+                });
+
+                tabla.appendChild(tablaEncabezado);
+                tabla.appendChild(tablaCuerpo);
+
+                $("#reporteTexto").append(`\
+                    <p>Exactitud: ${(vp+vn)/(vp+vn+fp+fn)}</p>\
+                    <p>Precision respecto a ${index[0]}: ${vp/(vp+fp)}</p>\
+                    <p>Precision respecto a ${index[1]}: ${fn/(fn+vn)}</p>\
+                    <p>Tasa de error: ${(fp+fn)/(vp+vn+fp+fn)}</p>\
+                    <p>Sensibilidad: ${fn/(fn+vn)}</p>\
+                    <p>Especificidad: ${vn/(vn+fp)}</p>\
+                `)
+                $("#cargando").remove();
+
+                modeloGenerado().then(modelo => {
+                    $("#modeloRL").append(`\
+                        <p>Prob = 1/(1+e^-(a+bX))
+                        <p>a+bX = ${modelo}</p>\
+                    `);
+                });
+            });
+
+            variables = [], varY = "1", rango="5";
+            $("#my-form").trigger("reset");
+            return false;
+        });
+    });
+
+    async function run(){
+        var vars = await eel.cabeceraDatos()();
+        var grupoBotones = document.getElementById("variables");
+
+        var contenedorVars = document.createElement("div");
+        contenedorVars.id = "dimensionalidad";
+
+        vars.forEach(e => {
+            let item = document.createElement("button");
+            item.className = "btn btn-outline-warning m-2 active";
+            item.setAttribute("data-bs-toggle","button");
+            item.setAttribute("autocomplete","off");
+            item.setAttribute("aria-pressed","true");
+            item.innerText = e;
+            variables.push(e);
+            contenedorVars.appendChild(item);
+        });
+
+        grupoBotones.appendChild(contenedorVars);
+    }
+    run();
+
+    function cls(){
+        $(document).ready(function(){
+            $("#dimensionalidad").children("button").each(function(){
+                $(this).attr("aria-pressed", "true");
+                this.className = "btn btn-outline-warning m-2 active";
+            });
+        });
+    }
+
+    function desactiva(){
+        $(document).ready(function(){
+            $("#preAnalisis").prop('disabled', true);
+            $("#predictora").empty();
+        });
+    }
+
+    async function realizarReporteRegresionLogistica(x,y,r){
+        return await eel.obtenerReporteRL(x,y,r)();
+    }
+    
+    async function modeloGenerado(){
+        return await eel.obtenerRL()();
+    }
+</script>
+</html>

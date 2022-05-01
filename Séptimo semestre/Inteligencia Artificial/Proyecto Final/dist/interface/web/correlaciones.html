@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="bootrstrap-v5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="datatables/datatables.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome-free-5.15.4-web/css/all.css">
+    <script src="/eel.js"></script>
+    <title>Correlaciones</title>
+</head>
+<body>
+  <div id="template"></div>
+  <div class="position-static top mx-5">
+    <h2 class="text-center mt-3">
+      TABLA CON DATOS
+    </h2>
+    <div class="d-flex align-items-center" id ="cargando">
+      <strong>Cargando...</strong>
+      <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div class="mt-2 mb-5 mx-3" style="z-index: 1;">
+    <table class="table table-dark table-hover mx-3" id = "info">
+    </table>
+  </div>
+
+  <div class="m-5 text-center" id="mapaCalor"></div>
+</body>
+
+<script src="jquery-3.6.0.min.js"></script>
+<script src="bootrstrap-v5/js/bootstrap.bundle.js"></script>
+<script type="text/javascript" charset="utf8" src="/datatables/datatables.js"></script>
+<script>
+  $(document).ready(function(){
+      $("#template").load("template.html", function(){
+        $("#CR3").addClass("active")
+      });
+  });
+
+  async function run(){
+    var datos = await eel.correlaciones()();
+    var jsonTabla = JSON.parse(datos);
+
+    var tabla = document.getElementById("info");
+
+    var tablaEncabezado = document.createElement("thead");
+    var tablaCuerpo = document.createElement("tbody");
+
+    var node = document.createElement("tr");
+    node.innerHTML = '<th scope="col">VARIABLES</th>';
+    
+    var encabezados = jsonTabla["columns"];
+    var info = jsonTabla["data"];
+    var index = jsonTabla["index"];
+
+    encabezados.forEach(e => {
+      let celda = document.createElement("th");
+      celda.scope = 'col';
+      celda.innerHTML = String(e);
+      node.appendChild(celda);
+    });
+    tablaEncabezado.appendChild(node)
+    
+    let i = 1;
+    info.forEach(e => {
+      let renglon = document.createElement("tr");
+      renglon.innerHTML = '<th scope="row">'+ index[i-1] + '</th>';
+      e.forEach(e2 => {
+        let celda = document.createElement("td");
+        celda.innerHTML = String(e2);
+        renglon.appendChild(celda);
+      });
+      tablaCuerpo.appendChild(renglon);
+      i++;
+    });
+
+    document.getElementById("cargando").remove();
+    
+    tabla.appendChild(tablaEncabezado);
+    tabla.appendChild(tablaCuerpo);
+
+    new DataTable("#info", {
+      scrollY: "420px",
+      scrollX: true,
+      language: {
+        "lengthMenu": "Mostrar _MENU_ registros",
+        "zeroRecords": "No se encontraron resultados",
+        "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+        "sSearch": "Buscar:",
+        "oPaginate": {
+            "sFirst": "Primero",
+            "sLast":"Último",
+            "sNext":"Siguiente",
+            "sPrevious": "Anterior"
+        },
+        "sProcessing":"Procesando..."
+      },
+      fixedHeader: true,
+      columnDefs: [ {
+        "searchable": false,
+        "orderable": false,
+        "targets": 0
+      }],
+      aaSorting: []
+    });
+    document.getElementById("info_filter").classList.add("mb-2");
+
+    var mapaCalor = document.createElement("img");
+    mapaCalor.className = "img-fluid";
+    mapaCalor.src = "graphs/mapaCalor.png";
+    mapaCalor.alt = "Mapa de calor obtenido a partir de la matriz de correlaciones";
+
+    var titulo = document.createElement("h2");
+    titulo.className = "text-center";
+    titulo.innerText = "MAPA DE CALOR"
+
+    document.getElementById("mapaCalor").appendChild(titulo);
+    document.getElementById("mapaCalor").appendChild(mapaCalor);
+  }
+  run();
+</script>
+
+</html>

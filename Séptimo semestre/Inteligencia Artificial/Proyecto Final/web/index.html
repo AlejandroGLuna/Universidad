@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="bootrstrap-v5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome-free-5.15.4-web/css/all.css">
+    <script src="/eel.js"></script>
+    <title>Menú Principal</title>
+</head>
+<body>
+    <div id="template"></div>
+    <div class="position-relative">
+        <div class="card text-center m-5">
+            <div class="card-header bg-danger bg-gradient fs-1 fw-bold py-3"></div>
+            <div class="card-body">
+            <h5 class="card-title">APARTADO PARA SUBIR ARCHIVO</h5>
+                <div>
+                <input class="form-control form-control-lg mt-4 mb-2" id="myFile" type="file" accept=".xlsx, .xls, .csv" onchange="handleFiles(this.files[0])"/>
+                <div class="form-check form-switch text-start">
+                  <input class="form-check-input" type="checkbox" id="cabecera" disabled>Incluir cabecera
+                </div>
+                <button type="button" id="subir" class="btn btn btn-outline-success btn-lg mt-2"  onclick="enviar()" disabled><i class="fas fa-upload me-2"></i>SUBIR ARCHIVO</button>
+                <button type="button" id="limpiar" class="btn btn btn-outline-danger btn-lg mt-2" onclick="disableButtons()" disabled><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+            <i class="fas fa-folder-open"></i>
+            Deberás subir un archivo para poder utilizar las distintas opciones.
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="bootrstrap-v5/js/bootstrap.bundle.js"></script>
+<script src="jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        $("#template").load("template.html", function(){
+          $("#datos").attr("class","nav-link text-muted fw-bold disabled");
+          $("#usuarioFinal").attr("class","nav-link text-muted fw-bold disabled");
+          $("#algoritmos").children("li").each(function(){
+            $(this).children("a").addClass("disabled");
+          });
+        });
+    });
+
+    function handleFiles(file){
+      $(document).ready(function(){
+        if(file != null){
+          $("#subir").prop("disabled",false);
+          $("#limpiar").prop("disabled",false);
+          $("#cabecera").prop("disabled",false);
+        }else{
+          $("#subir").prop("disabled",true);
+          $("#limpiar").prop("disabled",true);
+          $("#cabecera").prop("disabled",true);
+        }
+      });
+    }
+  
+    function disableButtons(){
+      $(document).ready(function(){
+        $("#subir").prop("disabled",true);
+        $("#limpiar").prop("disabled",true);
+        $("#cabecera").prop("disabled",true);
+        $("#myFile").val("");
+      });
+    }
+  
+    function enviar(){
+      var archivo = document.getElementById("myFile").files[0];
+      var cabecera = $("#cabecera").is(":checked");
+
+      habilitar();
+
+      eel.leerArchivo(archivo.name, cabecera);
+      disableButtons();
+    }
+  
+    function habilitar(){
+      $(document).ready(function(){
+        $("#datos").attr("class","nav-link text-white-50 fw-bold");
+        $("#usuarioFinal").attr("class","nav-link text-white-50 fw-bold");
+        $("#algoritmos").children("li").each(function(){
+          $(this).children("a").removeClass("disabled");
+        });
+      });
+    }
+
+    async function run(){
+      if(await eel.hayArchivo()() == '1')
+        habilitar();
+    }
+    run();
+</script>
+
+</html>

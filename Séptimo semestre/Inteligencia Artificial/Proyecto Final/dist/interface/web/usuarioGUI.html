@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="bootrstrap-v5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="datatables/datatables.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome-free-5.15.4-web/css/all.css">
+    <script src="/eel.js"></script>
+    <title>Interfaz Usuario</title>
+</head>
+<body>
+    <div id="template"></div>
+    <div id="aviso"></div>
+    <div>
+        <div class="card text-white text-center bg-dark m-5">
+            <div class="card-header my-1 mt-3"><h2>Realizar Predicción</h2></div>
+            <div class="card-body">
+                <form action="" id="my-form">
+                    <fieldset id="predecirVariable" disabled>
+                        <h5 class="card-title">Ingresar los parámetros solicitados</h5>
+                        <div class="container">
+                            <div class="row row-cols-2" id ="parametros"></div>
+                        </div>
+                        <button type="submit" id="preModelo" class="btn btn-outline-success btn-lg mt-2"><i class="fas fa-caret-square-up me-2"></i>PREDECIR</button>
+                        <button type="reset" id="limpiarVariables" class="btn btn btn-outline-danger btn-lg mt-2"><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="mx-5" id="mostrarResultado"></div>
+</body>
+
+<script src="jquery-3.6.0.min.js"></script>
+<script src="bootrstrap-v5/js/bootstrap.bundle.js"></script>
+<script>
+    var parametrosX;
+    $(document).ready(function(){
+        $("#template").load("template.html", function(){
+            $("#usuarioFinal").attr("class","nav-link text-white fw-bold");
+        });
+
+        $(document).on('submit', '#my-form', function(){
+            let valores = [];
+            parametrosX.forEach(e => {
+                valores.push($(`#${e}`).val());
+            });
+
+            pronosticar(valores).then(arr => {
+                $("#mostrarResultado").empty();
+
+                $("#mostrarResultado").append(`\
+                <div class="alert alert-success" role="alert">
+                    <p>El valor que se predijo fue: ${arr[0]}</p>
+                    <p>${arr[1]}</p>
+                </div>
+                `);
+            });
+            return false;
+        });
+    });
+
+    async function run(){
+        let existeModelo = await eel.hayModelo()();
+        if (existeModelo == "0"){
+            document.getElementById("aviso").innerHTML = "";
+
+            let divAviso = document.createElement("div");
+            divAviso.className = "alert alert-danger";
+            divAviso.setAttribute("role","alert")
+            divAviso.innerHTML = `<i class='fas fa-exclamation-triangle me-2'></i>Es necesario generar un modelo antes de poder utilizar esta funcionalidad.\
+                Contacte un especialista para que use el módulo de <a href='regresionL.html' class='alert-link'>regresión logística</a> o de \
+                <a href='arbolDecision.html' class='alert-link'>árboles de decisión</a>`
+            document.getElementById("aviso").appendChild(divAviso);
+        }else{
+            parametrosX = await eel.obtenerParametros()();
+            document.getElementById("predecirVariable").disabled = false;
+
+            parametrosX.forEach(e => {
+                let divRow = document.createElement("div");
+                divRow.className = "form-group row";
+                divRow.innerHTML = `<label for='${e}' class='col-sm-4 text-end col-form-label'>${e}</label> \
+                                    <div class='col-sm-8'>\
+                                        <input type='text' class='form-control' placeholder='0.00' pattern='^\\d+(\\.\\d+)?$' id = '${e}' required>\
+                                        <small id='descripcion' class='form-text text-white-50'>\
+                                            Ingresar unicamente números decimales\
+                                        </small>\
+                                    </div>`;
+                document.getElementById("parametros").appendChild(divRow);
+            });
+        }
+    }
+    run();
+
+    async function pronosticar(p){
+        return await eel.usarModelo(p)();
+    }
+</script>
+</html>

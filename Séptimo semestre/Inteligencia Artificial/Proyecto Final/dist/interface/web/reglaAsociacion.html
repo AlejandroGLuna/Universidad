@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="bootrstrap-v5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="datatables/datatables.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome-free-5.15.4-web/css/all.css">
+    <script src="/eel.js"></script>
+    <script src="chart.js"></script>
+    <title>Regla Asociación</title>
+</head>
+<body>
+  <div id="template"></div>
+  <div class = "mx-3 my-5" id="tabla">
+    <div class="d-flex align-items-center" id ="cargando">
+      <strong>Cargando...</strong>
+      <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+    </div>
+    <table class="table table-dark table-hover" id = "frecuencias">
+      <thead id = "cabecera"></thead>
+      <tbody id = "cuerpo"></tbody>
+    </table>
+  </div>
+    <canvas id="myChart" class="mx-2 mb-5" width="400" height="400"></canvas>
+  <div>
+    <div class="card text-white text-center bg-dark m-5">
+      <div class="card-header my-1 mt-3"><h2>Ingresar Parámetros</h2></div>
+      <div class="card-body">
+          <form action="" id="my-form">
+              <div class="form-group row">
+                  <h5 class="card-title col-sm-2 col-form-label col-form-label-lg">Soporte</h5>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="soporte" placeholder="0.000" pattern="^(0{0,1})(\.\d+){0,1}$" required>
+                    <small id="descripcion" class="form-text text-white-50">
+                      Solamente ingresar el numero como en el ejemplo. El valor debe estar en formato decimal y deberá ser menor a 1.
+                    </small>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <h5 class="card-title col-sm-2 col-form-label col-form-label-lg">Confianza</h5>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="confianza" placeholder="0.000" pattern="^(0{0,1})(\.\d+){0,1}$" required>
+                    <small id="descripcion" class="form-text text-white-50">
+                      Solamente ingresar el numero como en el ejemplo. El valor debe estar en formato decimal y deberá ser menor a 1.
+                    </small>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <h5 class="card-title col-sm-2 col-form-label col-form-label-lg">Lift</h5>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control" id="lift" placeholder="0.000" pattern="^(\d*)(\.\d+){0,1}$" required>
+                    <small id="descripcion" class="form-text text-white-50">
+                      Solamente ingresar el numero como en el ejemplo.
+                    </small>
+                  </div>
+              </div>
+              <div>
+                <button type="submit" id="subir" class="btn btn-outline-success btn-lg mt-2"><i class="fas fa-caret-square-up me-2"></i>INGRESAR</button>
+                <button type="reset" id="limpiar" class="btn btn-outline-danger btn-lg mt-2"><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+              </div>
+          </form>
+      </div>
+    </div>
+    <div id="reglasAsociacion" class="accordion accordion-flush mx-5 mb-2"></div>
+    <div class="d-grid gap-2" id = "botonConclusion"></div>
+  </div>
+</body>
+
+<script src="bootrstrap-v5/js/bootstrap.bundle.js"></script>
+<script src="jquery-3.6.0.min.js"></script>
+<script type="text/javascript" charset="utf8" src="/datatables/datatables.js"></script>
+<script src="FileSaver.js"></script>
+
+<script>
+  var soporte, confianza, lift, nombres = [], frecuencias = [], numReglas;
+
+  $(document).ready(function(){
+      $("#template").load("template.html", function(){
+          $("#RA1").addClass("active")
+      });
+
+      grafico().then(json => {
+        var transacciones = JSON.parse(json); 
+        var cabecera = document.getElementById("cabecera");
+        var cuerpo = document.getElementById("cuerpo");
+
+        document.getElementById("cargando").remove();
+
+        var node = document.createElement("tr");
+        node.innerHTML = '<th scope="col">#</th>';
+        cabecera.appendChild(node);
+
+        var encabezados = transacciones["columns"];
+        var info = transacciones["data"];
+
+        encabezados.forEach(e => {
+          let celda = document.createElement("th");
+          celda.scope = 'col';
+          celda.innerHTML = String(e);
+          node.appendChild(celda);
+        });
+
+        let i = 1;
+        info.forEach(e => {
+          let renglon = document.createElement("tr");
+          renglon.innerHTML = '<th scope="row">'+ i++ +'</th>';
+          cuerpo.appendChild(renglon);
+          e.forEach(e2 => {
+            let celda = document.createElement("td");
+            celda.innerHTML = String(e2);
+            renglon.appendChild(celda);
+          });
+
+          nombres.push(e[0]);
+          frecuencias.push(e[1]);
+        });
+        
+        new DataTable("#frecuencias", {
+          scrollY: "420px",
+          scrollX: true,
+          language: {
+            "lengthMenu": "Mostrar _MENU_ registros",
+            "zeroRecords": "No se encontraron resultados",
+            "info": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "infoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "infoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sSearch": "Buscar:",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast":"Último",
+                "sNext":"Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "sProcessing":"Procesando..."
+          },
+          fixedHeader: true
+        });
+        
+        document.getElementById("frecuencias_filter").classList.add("mb-2");
+
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var myChart = new Chart(ctx, {
+          type:"bar",
+          data:{
+            labels:nombres,
+            datasets:[{
+              label: "Frecuencia",
+              data:frecuencias,
+              backgroundColor: 'rgb(255, 187, 0)',
+              hoverBackgroundColor: 'rgb(209, 41, 29)'
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        })
+      });
+
+      $(document).on('submit', '#my-form', function() {
+        soporte = $("#soporte").val();
+        confianza = $("#confianza").val();
+        lift = $("#lift").val();
+        
+        $("#my-form").trigger("reset");
+        $("#reglasAsociacion").empty();
+        $("#botonConclusion").empty();
+        reglas(soporte, confianza, lift).then(json => {
+          var transacciones = JSON.parse(json)["data"];
+          var contenedor = document.getElementById("reglasAsociacion");
+
+          let i = 1;
+          transacciones.forEach(e => {
+            let item = document.createElement("div");
+            item.className = "accordion-item";
+
+            let h2 = document.createElement("h2");
+            h2.id = `flush-h${i}`;
+            h2.className = "accordion-header";
+
+            let boton = document.createElement("button");
+            boton.className = "accordion-button collapsed";
+            boton.type = "button";
+            boton.setAttribute("data-bs-toggle","collapse");
+            boton.setAttribute("data-bs-target",`#flush-c${i}`);
+            boton.setAttribute("aria-expanded","false");
+            boton.setAttribute("aria-controls",`flush-c${i}`);
+            boton.innerHTML = "Regla #" + i.toString();
+
+            let divCard = document.createElement("div");
+            divCard.id = `flush-c${i}`;
+            divCard.className = "accordion-collapse collapse";
+            divCard.setAttribute("aria-labelledby", `flush-h${i}`);
+            divCard.setAttribute("data-bs-parent", "#reglasAsociacion");
+
+            let contenido = document.createElement("div");
+            contenido.className = "accordion-body";
+            contenido.id = `regla-${i}`;
+
+            let pR = document.createElement("p");
+            let arr = e[0].replaceAll(/\'|\[|\]/g,"");
+            pR.innerText = "Regla de asociacion: " + arr;
+
+            let pS = document.createElement("p");
+            pS.innerText = `Soporte: ${e[1]}`;
+
+            let pC = document.createElement("p");
+            pC.innerText = `Confianza: ${e[2]}`;
+
+            let pL = document.createElement("p");
+            pL.innerText = `Lift: ${e[3]}`;
+
+            let areaTexto = document.createElement("textarea");
+            areaTexto.className = "form-control";
+            areaTexto.id =  `conclusion-${i}`;
+
+            contenido.appendChild(pR);
+            contenido.appendChild(pS);
+            contenido.appendChild(pC);
+            contenido.appendChild(pL);
+            contenido.appendChild(areaTexto);
+            
+            divCard.appendChild(contenido);
+
+            h2.appendChild(boton);
+
+            item.appendChild(h2);
+            item.appendChild(divCard);
+
+            contenedor.appendChild(item);
+
+            i++;
+          })
+          numReglas = i;
+        });
+        let boton = document.createElement("button");
+        boton.className = "btn btn-success btn-lg mt-2 mb-5 mx-5";
+        boton.type = "button";
+        boton.innerText = "Guardar Conclusiones";
+        boton.onclick = generarConclusion;
+
+        document.getElementById("botonConclusion").appendChild(boton);
+
+        return false;
+      });
+  });
+
+  function generarConclusion(){
+    $(document).ready(function(){
+      let con = "";
+      for (let i = 1; i <= numReglas; i++) {
+        texto = $(`#conclusion-${i}`).val();
+        if(texto){
+          con += `\t=== REGLA ${i} ===\n`;
+          $(`#regla-${i}`).children("p").each(function () {
+            con += $(this).text().trim() + "\n";
+          });
+          con += "***CONCLUSION GENERADA***" + "\n" + texto.trim() + "\n\n";
+        }
+      }
+      var blob = new Blob([con], {type: "text/plain;charset=utf-8"});
+      saveAs(blob, "conclusiones.txt");
+    });
+  }
+
+  async function grafico(){
+    return await eel.grafico()();
+  }
+
+  async function reglas(sprt, cnf, lft){
+    return await eel.reglas(sprt, cnf, lft)();
+  }
+</script>
+</html>

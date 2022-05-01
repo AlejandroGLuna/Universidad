@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang = "es">
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="bootrstrap-v5/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="datatables/datatables.css">
+    <link rel="stylesheet" type="text/css" href="fontawesome-free-5.15.4-web/css/all.css">
+    <script src="/eel.js"></script>
+    <title>Árbol de Decisión</title>
+</head>
+<body>
+    <div id="template"></div>
+    <div>
+        <div class="card text-white text-center bg-dark m-5">
+            <div class="card-header my-1 mt-3"><h2>Ajustar Variables</h2></div>
+            <div class="card-body">
+                <h5 class="card-title">Seleccionar las variables a considerar</h5>
+                <div class="form-group row" id ="variables"></div>
+                <button type="button" id="preModelo" class="btn btn-outline-success btn-lg mt-2"><i class="fas fa-caret-square-up me-2"></i>INGRESAR</button>
+                <button type="reset" id="limpiarVariables" class="btn btn btn-outline-danger btn-lg mt-2" onclick="cls()"><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <form action="" id="my-form">
+            <fieldset id="preAnalisis" disabled>
+                <div class="card text-white text-center bg-dark m-5">
+                    <div class="card-header my-1 mt-3"><h2>Ajustar Modelo</h2></div>
+                    <div class="card-body">
+                        <div class="form-group row mb-3">
+                            <label for="predictora" class="col-sm-2 text-end col-form-label">Seleccionar la variable a predecir</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="predictora"></select>
+                            </div>
+                        </div>
+                        
+                        <label for="rangoSlide" class="form-label">Seleccionar el porcentaje de datos para prueba</label>
+                        <div class="form-group row mb-3">
+                            <div class="col-sm-10">
+                                <input type="range" class="form-range" id="rangoSlide" min="5" max="30" step="1" value="5">
+                            </div>
+                            <div class="col-sm-2" id="valorRango">5%</div>
+                        </div>
+                        
+                        <div class="badge rounded-pill bg-primary form-group row my-3 text-wrap">
+                            <p class="fs-6 fw-bold">En caso de no querer ajustar los parámetros para la construcción del árbol no ingresar ningún valor</p>
+                        </div>
+
+                        <div class="badge rounded-pill bg-primary form-group row my-3 text-wrap">
+                            <p class="fs-6 fw-bold">Por defecto se generará un árbol de decisión para regresión</p>
+                        </div>
+                        
+                        <div class="form-group row my-3">
+                            <label for='max-depth' class='col-sm-2 text-end col-form-label'>Max-Depth</label> 
+                            <div class='col-sm-10'> 
+                                <input type='text' class='form-control' placeholder='00' pattern='^\d*?$' id='max-depth'> 
+                                <small id='descMax' class='form-text text-white-50'> 
+                                    Ajustar el máximo del árbol. Solo ingresar enteros. El valor por defecto es el máximo posiblo. 
+                                </small>
+                            </div>
+
+                            <label for='min_samples_split' class='col-sm-2 text-end col-form-label'>Min-samples-split</label> 
+                            <div class='col-sm-10'> 
+                            <input type='text' class='form-control' placeholder='00' pattern='^\d*?$' id='min_samples_split'> 
+                            <small id='descSplit' class='form-text text-white-50'> 
+                                Ajustar el número mínimo para el criterio de división. Solo ingresar enteros. El valor por defecto es 2. 
+                            </small>
+                            </div>
+
+                            <label for='min_samples_leaf' class='col-sm-2 text-end col-form-label'>Min-samples-leaf</label> 
+                            <div class='col-sm-10'> 
+                            <input type='text' class='form-control' placeholder='00' pattern='^\d*?$' id='min_samples_leaf'> 
+                            <small id='descLeaf' class='form-text text-white-50'> 
+                                Ajustar el máximo de elementos en un nodo hoja. Solo ingresar enteros. El valor por defecto es 1. 
+                            </small>
+                            </div>
+                        </div>
+
+                        <div class="form-check form-switch text-start">
+                        <input class="form-check-input" type="checkbox" id="paraClasificar">Árbol para clasificación
+                        </div>
+
+                        <button type="submit" id="subir" class="btn btn-outline-success btn-lg mt-2"><i class="fas fa-caret-square-up me-2"></i>INGRESAR</button>
+                        <button type="reset" id="limpiar" class="btn btn btn-outline-danger btn-lg mt-2"><i class="fas fa-minus-circle me-2"></i>LIMPIAR</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+
+    <div id ="loading" class="mx-5 mb-5"></div>
+
+    <div class="mx-5 mb-5 text-center">
+        <table class="table table-dark table-hover" id = "importancia"></table>
+        <table class="table table-dark table-hover" id = "info"></table>
+        <div class="text-primary" id ="reporteTexto"></div>
+    </div>
+
+
+    <div class="mx-5 mb-5 text-center">
+        <div class="text-danger fw-bolder" id="arbolImagen"></div>
+        <div class="text-success font-monospace fw-bold text-start lh-1 bg-light bd-gradient" id="arbolTexto" style="white-space: pre-wrap;"></div>
+    </div>
+
+</body>
+
+<script src="jquery-3.6.0.min.js"></script>
+<script src="bootrstrap-v5/js/bootstrap.bundle.js"></script>
+<script>
+    var variables = [], varY = "1", rango="5";
+    $(document).ready(function(){
+        $("#template").load("template.html", function(){
+            $("#AD7").addClass("active")
+        });
+
+        $("#preModelo").click(function(){
+            $("#preAnalisis").prop('disabled', false);
+            $("#predictora").empty();
+
+            let i = 1;
+            variables = [];
+            $("#dimensionalidad").children().each(function() {
+                if (this.className == "btn btn-outline-warning m-2 active"){
+                    let variableActual = this.innerText;
+                    $("#predictora").append(`<option value="${i++}">${variableActual}</option>`);
+                    variables.push(variableActual);
+                }
+            });
+        });
+
+        $(document).on('input', '#rangoSlide', function() {
+            rango = $(this).val();
+            $("#valorRango").text(`${rango}%`);
+        });
+
+        $('#predictora').on('change', function(){
+            varY = this.value;
+        });
+
+        $(document).on('submit', '#my-form', function(){
+            $("#loading").append(`\
+                <div class='d-flex align-items-center' id ='cargando'>\
+                <strong>Cargando...</strong>\
+                <div class='spinner-border ms-auto' role='status' aria-hidden='true'></div>\
+                </div>\
+            `);
+
+            let varYIndex = parseInt(varY,10)-1;
+            let predecir = variables[varYIndex];
+            let maxDepth = $("#max-depth").val() ? $("#max-depth").val() : 0;
+            let minSplit = $("#min_samples_split").val() ? $("#min_samples_split").val() : 2;
+            let minLeaf = $("#min_samples_leaf").val() ? $("#min_samples_leaf").val() : 1;
+            let clasificar = $("#paraClasificar").is(":checked");
+
+            variables.splice(varYIndex,1);
+
+            $("#valorRango").text(`5%`);
+            cls();
+            desactiva();
+            $("#info").empty();
+            $("#importancia").empty();
+            $("#reporteTexto").empty();
+            $("#arbolTexto").empty();
+            $("#arbolImagen").empty();
+            
+            realizarReporteArbolDecision(variables, predecir, rango, maxDepth, minSplit, minLeaf, clasificar).then(res => {
+                if (clasificar)
+                {
+                    let datos = JSON.parse(res); 
+                    let info = datos["data"];
+                    let index = datos["index"];
+
+                    let tabla = document.getElementById("info");
+                    let tablaEncabezado = document.createElement("thead");
+                    let tablaCuerpo = document.createElement("tbody");
+
+                    let node = document.createElement("tr");
+                    node.innerHTML = '<th scope="col">Etiquetas</th>';
+
+                    index.forEach(e => {
+                        let celda = document.createElement("th");
+                        celda.scope = 'col';
+                        celda.innerHTML = String(e);
+                        node.appendChild(celda);
+                    });
+                    tablaEncabezado.appendChild(node)
+
+                    let i = 0, vp = parseInt(info[0][0],10), fn = parseInt(info[0][1],10), fp = parseInt(info[1][0],10), vn = parseInt(info[1][1],10);
+                    info.forEach(e => {
+                        let renglon = document.createElement("tr");
+                        renglon.innerHTML = '<th scope="row">'+ index[i] + '</th>';
+                        e.forEach(e2 => {
+                            let celda = document.createElement("td");
+                            celda.innerHTML = String(e2);
+                            renglon.appendChild(celda);
+                        });
+                        tablaCuerpo.appendChild(renglon);
+                        i++;
+                    });
+
+                    tabla.appendChild(tablaEncabezado);
+                    tabla.appendChild(tablaCuerpo);
+
+                    $("#reporteTexto").append(`\
+                        <p>Exactitud: ${(vp+vn)/(vp+vn+fp+fn)}</p>\
+                        <p>Precision respecto a ${index[0]}: ${vp/(vp+fp)}</p>\
+                        <p>Precision respecto a ${index[1]}: ${fn/(fn+vn)}</p>\
+                        <p>Tasa de error: ${(fp+fn)/(vp+vn+fp+fn)}</p>\
+                        <p>Sensibilidad: ${fn/(fn+vn)}</p>\
+                        <p>Especificidad: ${vn/(vn+fp)}</p>\
+                    `)
+                }else{
+                    res.forEach(e => {
+                        $("#reporteTexto").append(`<p>${e}</p>`);
+                    });
+                }
+
+                let imagenArbol = document.createElement("img");
+                imagenArbol.className = "img-fluid";
+                imagenArbol.src = "graphs/arbol.png";
+                imagenArbol.alt = "Arbol de decisión obtenido";
+
+                let titulo = document.createElement("h2");
+                titulo.className = "text-center";
+                titulo.innerText = "ÁRBOL DE DECISIÓN"
+
+                document.getElementById("arbolImagen").appendChild(titulo);
+                document.getElementById("arbolImagen").appendChild(imagenArbol);
+
+                $("#loading").empty();
+
+                generarImportancias().then(json => {
+                    let datos = JSON.parse(json);
+
+                    let index = datos["index"];
+                    let encabezados = datos["columns"];
+                    let info = datos["data"];
+
+                    let tabla = document.getElementById("importancia");
+                    let tablaEncabezado = document.createElement("thead");
+                    let tablaCuerpo = document.createElement("tbody");
+
+                    let node = document.createElement("tr");
+                    node.innerHTML = '<th scope="col">#</th>';
+
+                    encabezados.forEach(e => {
+                        let celda = document.createElement("th");
+                        celda.scope = 'col';
+                        celda.innerHTML = String(e);
+                        node.appendChild(celda);
+                    });
+                    tablaEncabezado.appendChild(node)
+
+                    let i = 0;
+                    info.forEach(e => {
+                        let renglon = document.createElement("tr");
+                        renglon.innerHTML = '<th scope="row">'+ index[i] + '</th>';
+                        e.forEach(e2 => {
+                            let celda = document.createElement("td");
+                            celda.innerHTML = String(e2);
+                            renglon.appendChild(celda);
+                        });
+                        tablaCuerpo.appendChild(renglon);
+                        i++;
+                    });
+
+                    tabla.appendChild(tablaEncabezado);
+                    tabla.appendChild(tablaCuerpo);
+                });
+
+                modeloGenerado().then(arbol => {
+                    $("#arbolTexto").append(`<p>${arbol}</p>`);
+                });
+            }); 
+
+            variables = [], varY = "1", rango="5";
+            $("#my-form").trigger("reset");
+            return false;
+        });
+    });
+
+    async function run(){
+        var vars = await eel.cabeceraDatos()();
+        var grupoBotones = document.getElementById("variables");
+
+        var contenedorVars = document.createElement("div");
+        contenedorVars.id = "dimensionalidad";
+
+        vars.forEach(e => {
+            let item = document.createElement("button");
+            item.className = "btn btn-outline-warning m-2 active";
+            item.setAttribute("data-bs-toggle","button");
+            item.setAttribute("autocomplete","off");
+            item.setAttribute("aria-pressed","true");
+            item.innerText = e;
+            variables.push(e);
+            contenedorVars.appendChild(item);
+        });
+
+        grupoBotones.appendChild(contenedorVars);
+    }
+    run();
+
+    function cls(){
+        $(document).ready(function(){
+            $("#dimensionalidad").children("button").each(function(){
+                $(this).attr("aria-pressed", "true");
+                this.className = "btn btn-outline-warning m-2 active";
+            });
+        });
+    }
+
+    function desactiva(){
+        $(document).ready(function(){
+            $("#preAnalisis").prop('disabled', true);
+            $("#predictora").empty();
+        });
+    }
+
+    async function realizarReporteArbolDecision(x,y,r,mD,mS,mL,c){
+        return await eel.obtenerReporteAD(x,y,r,mD,mS,mL,c)();
+    }
+    
+    async function modeloGenerado(){
+        return await eel.obtenerAD()();
+    }
+    
+    async function generarImportancias(){
+        return await eel.obtenerImportancias()();
+    }
+</script>
+</html>
